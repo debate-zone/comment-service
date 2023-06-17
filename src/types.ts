@@ -4,9 +4,9 @@ import {
     inputCommentListSchema,
     inputCommentSchema,
     outputCommentListSchema,
-    outputCommentSchema
-} from "./zodSchema";
-import {z} from "zod";
+    outputCommentSchema,
+} from './zodSchema';
+import { z } from 'zod';
 
 export type Comment = z.infer<typeof commentSchema>;
 export type InputComment = z.infer<typeof inputCommentSchema>;

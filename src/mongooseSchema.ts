@@ -5,19 +5,22 @@ import { Comment } from './types';
 
 export type CommentDocument = Document & Comment;
 
-const commentMongooseSchema: mongoose.Schema = baseSchema.add({
+const mongooseSchema: mongoose.Schema = baseSchema.add({
     userId: {
         type: Types.ObjectId,
         ref: CollectionsEnum.USER,
         required: true,
     },
-    userFirstName: {
+    userFullName: {
         type: String,
         required: true,
     },
     toUserId: {
         type: Types.ObjectId,
         ref: CollectionsEnum.USER,
+    },
+    toUserFullName: {
+        type: String,
     },
     text: {
         type: String,
@@ -32,5 +35,5 @@ const commentMongooseSchema: mongoose.Schema = baseSchema.add({
 
 export const commentMongooseModel = mongoose.model<CommentDocument>(
     CollectionsEnum.COMMENT,
-    commentMongooseSchema,
+    mongooseSchema,
 );

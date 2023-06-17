@@ -1,7 +1,7 @@
-import {createMiddleware, defaultEndpointsFactory} from "express-zod-api"
-import {getComments} from "./commentDebateZoneService";
+import { createMiddleware, defaultEndpointsFactory } from 'express-zod-api';
+import { getComments } from './commentService';
 import { z } from 'zod';
-import {inputCommentListSchema, outputCommentListSchema} from "./zodSchema";
+import { inputCommentListSchema, outputCommentListSchema } from './zodSchema';
 
 export const authMiddleware = createMiddleware({
     input: z.object({}),
@@ -27,6 +27,6 @@ export const getCommentListEndpoint = endpointsFactory.build({
     output: outputCommentListSchema,
     handler: async ({ input, options, logger }) => {
         logger.debug('Options:', options);
-        return await getComments(input.debateZoneId, options.userId);
+        return await getComments(input.debateZoneId);
     },
 });

@@ -7,10 +7,10 @@ import {
 export const commentSchema = baseZodSchema.extend({
     debateZoneId: idObjectIdsSchema,
     userId: idObjectIdsSchema,
-    userFirstName: z.string(),
+    userFullName: z.string(),
     parentId: idObjectIdsSchema.optional(),
     toUserId: idObjectIdsSchema.optional(),
-    toUserFirstName: z.string().optional(),
+    toUserFullName: z.string().optional(),
     text: z.string(),
 });
 
@@ -20,8 +20,9 @@ export const inputCommentSchema = commentSchema.omit({
     createdAt: true,
     updatedAt: true,
     userId: true,
-    userFirstName: true,
+    userFullName: true,
     isDeleted: true,
+    debateZoneId: true,
 });
 
 export const outputCommentSchema = commentSchema.omit({
