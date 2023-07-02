@@ -1,7 +1,9 @@
 import { Server } from 'socket.io';
 import { addComment, deleteComment, getComments } from './commentService';
-import { DeleteComment, InputComment, InputCommentList } from './types';
+import { DeleteComment, InputComment } from './types';
 import 'dotenv/config';
+import { verify } from '../../debate-zone-micro-service-common-library/src/auth/token';
+import { OutputDecodedToken } from '../../debate-zone-micro-service-common-library/src/types/auth';
 
 export const initCommentSocket = () => {
     return new Server({
@@ -9,23 +11,26 @@ export const initCommentSocket = () => {
             origin: '*',
         },
     })
-        .listen(Number(process.env.SOCKET_PORT || 3000))
+        .listen(Number(process.env.SOCKET_PORT || 3001))
         .of('/comment')
-        .use((socket, next) => {
-            // const token = socket.handshake.auth.token;
-            // if (token) {
-            //     todo check token
-            next();
-            // } else {
-            //     next(new Error('Authentication error'));
-            // }
-        })
-        .on('connection', socket => {
+        .on('connection', async socket => {
+            let userId: string;
+            let userFullName: string;
             const deviceName = socket.handshake.query.deviceName as string;
             const debateZoneId = socket.handshake.query.debateZoneId as string;
-            // todo get from token
-            const userId = socket.handshake.query.userId as string;
-            const userFullName = socket.handshake.query.userFullName as string;
+
+            const token = socket.handshake.auth.token;
+            if (token) {
+                const outputDecodedToken: OutputDecodedToken = await verify(
+                    token,
+                );
+
+                userId = outputDecodedToken.userId;
+                userFullName = outputDecodedToken.userFullName;
+            } else {
+                socket.disconnect(true);
+                throw new Error('Authentication error');
+            }
 
             if (!debateZoneId) {
                 throw new Error(
